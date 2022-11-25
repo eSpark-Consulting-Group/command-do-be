@@ -37,7 +37,16 @@ const CategoryServices = {
 
   async addNewCategory(data) {
     try {
-      console.log(data);
+      const isFind = await prisma?.category.findFirst({
+        where: {
+          name: {
+            equals: data?.name,
+            mode: 'insensitive'
+          }
+          
+        }
+      })
+      if (isFind) return createError("401", "Category Already Exist");
       const category = await prisma.category.create({
         data: data,
       });
