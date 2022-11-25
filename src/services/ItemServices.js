@@ -106,6 +106,9 @@ const ItemServices = {
           contains: data?.text,
           mode: 'insensitive'
         },
+      },
+      include: {
+        Category: true,
       }
     })
     return createResponse(items, true, items?.length > 0 ? `Items that contains ${data?.text}` : 'Item Not Found!');
