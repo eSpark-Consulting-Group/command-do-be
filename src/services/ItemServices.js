@@ -11,7 +11,7 @@ const ItemServices = {
     const pagination = requestPagination(data?.pagination?.cursor);
     try {
       const responseData = await prisma.item.findMany({
-        take: data?.pagination?.limit || 10,
+        take: data?.pagination?.limit || 25,
         where: data?.where,
         include: {
           Category: true,
