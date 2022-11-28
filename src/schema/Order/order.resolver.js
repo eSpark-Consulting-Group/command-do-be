@@ -13,8 +13,8 @@ const orderResolver = {
     getAllOrders: async (args, req, context) => {
       if (req?.GetOrderInput?.createdAt) {
         req.GetOrderInput.createdAt = {
-          lte: getNextDay(new Date(req.GetOrderInput.createdAt)),
-          gt: new Date(req.GetOrderInput.createdAt),
+          lt: getNextDay(new Date(req.GetOrderInput.createdAt)),
+          gte: new Date(req.GetOrderInput.createdAt),
         };
       }
       const response = await prisma.order.findMany({
@@ -59,6 +59,14 @@ const orderResolver = {
       const response = await OrderService.orderPurchased(req);
       return response;
     },
+    orderPurchased: async (args, req, context) => {
+      const response = await OrderService.orderPurchased(req);
+      return response;
+    },
+    getCollectedOrder:async (args, req, context) => {
+      const response = await OrderService.getCollectedOrder(req);
+      return response;
+    },
   },
   Mutation: {
     createOrder: async (args, req) => {
@@ -67,6 +75,10 @@ const orderResolver = {
     },
     updateOrder: async (args, req) => {
       const response = await OrderService.updateOrder(req);
+      return response;
+    },
+    deleteOrder: async (args, req) => {
+      const response = await OrderService.deleteOrder(req);
       return response;
     },
   },

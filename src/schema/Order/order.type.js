@@ -2,6 +2,8 @@ const { gql } = require("graphql-modules");
 
 const Order = gql`
   scalar Date
+  scalar JSON
+  scalar JSONObject
 
   type Order {
     id: Int
@@ -17,6 +19,16 @@ const Order = gql`
     updatedAt: Date
     OrderItems: [OrderItems]
     returned: Boolean
+  }
+
+  type CollectedOrder {
+    id: Int
+    riderId: Int
+    Rider: User
+    summary: JSON
+    totalAmount: Int
+    createdAt: Date
+    updatedAt: Date
   }
 
   type OrderSummary {
@@ -50,6 +62,13 @@ const Order = gql`
     status: Boolean
     message: String
     data: Order
+    error: String
+  }
+
+  type CollectedOrderResponse {
+    status: Boolean
+    message: String
+    data: CollectedOrder
     error: String
   }
 
@@ -107,6 +126,7 @@ const Order = gql`
       endDate: Date!
     ): OrderOverviewArrayResponse
     orderPurchased: OrderResponse
+    getCollectedOrder(date: Date): CollectedOrderResponse
   }
 
   type Mutation {
@@ -116,6 +136,7 @@ const Order = gql`
       type: ORDER_UPDATE
       returnAmount: Int
     ): OrderResponse
+    deleteOrder(id: Int!): OrderResponse
   }
 
   enum ORDER_STATUS {

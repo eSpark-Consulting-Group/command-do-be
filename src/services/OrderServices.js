@@ -81,15 +81,16 @@ const OrderService = {
             id: data?.input[0]?.id,
           },
         });
-        const isReturned = order.paidAmount - order.totalAmount - data?.returnAmount 
+        const isReturned =
+          order.paidAmount - order.totalAmount - data?.returnAmount;
         const orderUpate = await prisma.order.update({
           where: {
             id: order.id,
           },
           data: {
-            returned: isReturned == 0 ? true : false
-          }
-        })
+            returned: isReturned == 0 ? true : false,
+          },
+        });
         const user = await prisma.user.findUnique({
           where: {
             id: order.userId,
@@ -101,7 +102,7 @@ const OrderService = {
           "Amount Returned",
           "Your today's remaining amount is Returned"
         );
-      }else {
+      } else {
         for (let index = 0; index < inputs?.length; index++) {
           const isOrder = await prisma.order.findUnique({
             where: {
@@ -110,9 +111,9 @@ const OrderService = {
           });
           inputs[index]["remainingAmount"] =
             inputs[index]?.paidAmount - isOrder.totalAmount;
-            if(inputs[index]["remainingAmount"] == 0) {
-              inputs[index]["returned"] = true;
-            }
+          if (inputs[index]["remainingAmount"] == 0) {
+            inputs[index]["returned"] = true;
+          }
           try {
             const result = await prisma.order.update({
               where: {
@@ -126,6 +127,19 @@ const OrderService = {
           }
         }
       }
+      const summary = await this.getOrderSummary({date: new Date().toISOString()})
+      console.log({
+        summary: summary?.data || [],
+        riderId: data?.input[0]?.riderId,
+        totalAmount: summary?.totalAmount
+      })
+       const CollectedOrder = await prisma.collectedOrders.create({
+        data: {
+          summary: summary?.data || [],
+          riderId: data?.input[0]?.riderId,
+          totalAmount: summary?.totalAmount
+        }
+      }).catch((err) => console.log("collected Order", err))
       return createResponse({}, true, "Order Updated Successfully");
     } else {
       return createError(400, "Bad input");
@@ -157,12 +171,13 @@ const OrderService = {
       const order = await prisma.orderItems.groupBy({
         by: ["itemId"],
         where: {
-          createdAt: {
-            // lte: getNextDay(new Date(new Date(data.date || new Date()).setHours(24))),
-            // gte: getPreviousDay(new Date(new Date(data.date || new Date().setHours(0)))),
-            lte: getNextDay(new Date(data.date)),
-            gt: new Date(data.date),
-          },
+          createdAt: new Date(new Date(data.date || new Date().setHours(0))),
+          // {
+          //   // lte: getNextDay(new Date(new Date(data.date || new Date()).setHours(24))),
+          //   // gte: getPreviousDay(new Date(new Date(data.date || new Date().setHours(0)))),
+          //   lte: getNextDay(new Date(data.date)),
+          //   gt: new Date(data.date),
+          // },
           Order: {
             riderId: {
               not: 0,
@@ -180,10 +195,7 @@ const OrderService = {
 
       const totalAmount = await prisma.order.aggregate({
         where: {
-          createdAt: {
-            lte: getNextDay(new Date(data.date)),
-            gt: new Date(data.date),
-          },
+          createdAt: new Date(new Date(data.date || new Date().setHours(0))),
           riderId: {
             not: 0,
           },
@@ -270,6 +282,35 @@ const OrderService = {
     );
     return createResponse(null, true, "Alert Send Successfully to all members");
   },
+
+  async getCollectedOrder(data) {
+    try {
+      const order = await prisma.collectedOrders.findFirst({
+        where: {
+          createdAt: new Date(new Date(data.date || new Date().setHours(0))),
+        },
+        include:{
+          Rider: true
+        }
+      });
+      return createResponse(order, true, "Collected Orders");
+    } catch (error) {
+      console.log("getCollectedOrder error", error);
+    }
+  },
+
+  async deleteOrder(data) {
+    try {
+      const order = await prisma.order.delete({
+        where: {
+          id: data?.id
+        },
+      });
+      return createResponse(order, true, "Order Deleted");
+    } catch (error) {
+      console.log("Order Deleted error", error);
+    }
+  }
 };
 
 module.exports = OrderService;
