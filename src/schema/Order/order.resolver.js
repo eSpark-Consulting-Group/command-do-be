@@ -28,6 +28,9 @@ const orderResolver = {
           Rider: true
         }, //relations.order(),
         where: req ? req?.GetOrderInput : {},
+        orderBy: {
+          createdAt: 'desc'
+        }
       });
       return createResponse(response, true, "All Orders");
     },
