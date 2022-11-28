@@ -1,0 +1,14 @@
+-- AlterTable
+ALTER TABLE "FavoriteItems" ALTER COLUMN "createdAt" SET DATA TYPE DATE,
+ALTER COLUMN "updatedAt" SET DATA TYPE DATE;
+
+-- AlterTable
+ALTER TABLE "Order" ALTER COLUMN "createdAt" SET DATA TYPE DATE,
+ALTER COLUMN "updatedAt" SET DATA TYPE DATE;
+
+-- AlterTable
+ALTER TABLE "OrderItems" ALTER COLUMN "createdAt" SET DATA TYPE DATE,
+ALTER COLUMN "updatedAt" SET DATA TYPE DATE;
+
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "updatedAt" DROP DEFAULT;

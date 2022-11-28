@@ -10,27 +10,28 @@ generator client {
 }
 
 model User {
-  id            Int             @id @default(autoincrement())
-  email         String?         @unique
-  firstName     String?
-  lastName      String?
-  userName      String?
-  avatar        String?
-  dob           DateTime?
-  phoneNumber   String?
-  country       String?
-  city          String?
-  role          ROLES[]
-  password      String          @default("")
-  resetToken    String          @default("")
-  status        Boolean         @default(true)
-  isVerified    Boolean         @default(true)
-  fcmToken      String?
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  FavoriteItems FavoriteItems[]
-  Orders        Order[]         @relation("UserOrder")
-  RiderOrder    Order[]         @relation("RiderOrder")
+  id              Int               @id @default(autoincrement())
+  email           String?           @unique
+  firstName       String?
+  lastName        String?
+  userName        String?
+  avatar          String?
+  dob             DateTime?
+  phoneNumber     String?
+  country         String?
+  city            String?
+  role            ROLES[]
+  password        String            @default("")
+  resetToken      String            @default("")
+  status          Boolean           @default(true)
+  isVerified      Boolean           @default(true)
+  fcmToken        String?
+  createdAt       DateTime          @default(now()) @db.Date
+  updatedAt       DateTime          @updatedAt @db.Date
+  FavoriteItems   FavoriteItems[]
+  Orders          Order[]           @relation("UserOrder")
+  RiderOrder      Order[]           @relation("RiderOrder")
+  CollectedOrders CollectedOrders[]
 }
 
 model Category {
@@ -64,8 +65,8 @@ model OrderItems {
   quantity  Int
   amount    Float
   note      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @db.Date
+  updatedAt DateTime @updatedAt @db.Date
 }
 
 model Order {
@@ -80,8 +81,8 @@ model Order {
   riderId         Int?
   Rider           User?        @relation(name: "RiderOrder", fields: [riderId], references: [id], onDelete: Cascade)
   status          ORDER_STATUS @default(UNPAID)
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
+  createdAt       DateTime     @default(now()) @db.Date
+  updatedAt       DateTime     @updatedAt @db.Date
 }
 
 model FavoriteItems {
@@ -90,8 +91,18 @@ model FavoriteItems {
   Item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
   userId    Int
   User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @db.Date
+  updatedAt DateTime @updatedAt @db.Date
+}
+
+model CollectedOrders {
+  id          Int      @id @default(autoincrement())
+  riderId     Int
+  Rider       User     @relation(fields: [riderId], references: [id], onDelete: Cascade)
+  summary     Json
+  totalAmount Int      @default(0)
+  createdAt   DateTime @default(now()) @db.Date
+  updatedAt   DateTime @updatedAt @db.Date
 }
 
 enum ROLES {
