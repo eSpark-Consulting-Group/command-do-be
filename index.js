@@ -51,16 +51,23 @@ httpServer.listen(PORT, () => {
   console.log(`🚀 Subscriptions ready at ws://localhost:${PORT}${server.subscriptionsPath}`)
 })
 
-cron.schedule('*/2 * * * *',async () => {
-  console.log('running a task every minute');
+cron.schedule('0 12 * * MON,TUE,WED,THU,FRI',async () => {
   Notification.send(
     await getUserFcmTokens(),
     {},
-    "🔔 Reminder!",
-    "Now you can place order for todays lunch"
+    "Time is running Out! ⏰",
+    "Order Closing in 30mins! Hurry Up 🚀"
   );
 });
 
+cron.schedule('0 10 * * MON,TUE,WED,THU,FRI',async () => {
+  Notification.send(
+    await getUserFcmTokens(),
+    {},
+    "Time to Order ⏰",
+    "Place Your Lunch Orders Now 🥪!"
+  );
+});
 
 //   node-prisma-apollo-backend:
 //   working_dir: /Users/mudassirraza/Desktop/Projects/node-prisma-apollo-backend
