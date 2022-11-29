@@ -9,6 +9,9 @@ const admin = require("firebase-admin");
 const { createServer } = require('http');
 const express = require("express");
 const { env } = require("process");
+const cron = require('node-cron');
+const Notification = require("./src/services/NotificationServices");
+const { getUserFcmTokens } = require("./src/utils/helperFunctions");
 
 const app = express();
 const httpServer = createServer(app);
@@ -48,7 +51,15 @@ httpServer.listen(PORT, () => {
   console.log(`🚀 Subscriptions ready at ws://localhost:${PORT}${server.subscriptionsPath}`)
 })
 
-
+cron.schedule('*/2 * * * *',async () => {
+  console.log('running a task every minute');
+  Notification.send(
+    await getUserFcmTokens(),
+    {},
+    "🔔 Reminder!",
+    "Now you can place order for todays lunch"
+  );
+});
 
 
 //   node-prisma-apollo-backend:
