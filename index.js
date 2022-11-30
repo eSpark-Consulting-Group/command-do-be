@@ -54,17 +54,17 @@ httpServer.listen(PORT, () => {
 });
 
 cron.schedule(
-  "30 18 * * MON,TUE,WED,THU,FRI",
+  "* * * * MON,TUE,WED,THU,FRI",
   async () => {
-    console.log("30 18 * * MON,TUE,WED,THU,FRI");
+    console.log("* * * * MON,TUE,WED,THU,FRI");
     Notification.send(
       await getUserFcmTokens(),
       {},
-      `Time is running Out! ⏰ time: ${new Date().toString()}`,
+      `Time is running Out! ⏰ updated time: ${new Date().toString()}`,
       "Order Closing in 30mins! Hurry Up 🚀"
     );
   },
-  { timezone: "Asia/Karachi" }
+  // { timezone: "Asia/Karachi" }
 );
 
 cron.schedule("0 5 * * MON,TUE,WED,THU,FRI", async () => {
