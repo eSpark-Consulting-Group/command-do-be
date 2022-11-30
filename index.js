@@ -54,13 +54,13 @@ httpServer.listen(PORT, () => {
 });
 
 cron.schedule(
-  "10 15 * * MON,TUE,WED,THU,FRI",
+  "0 7 * * MON,TUE,WED,THU,FRI",
   async () => {
-    console.log("10 15 * * MON,TUE,WED,THU,FRI");
+    
     Notification.send(
       await getUserFcmTokens(),
       {},
-      `Time is running Out! ⏰ \n UTC time: ${new Date().toString()}`,
+      `Time is running Out! ⏰`,
       "Order Closing in 30mins! Hurry Up 🚀"
     );
   },
