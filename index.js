@@ -56,7 +56,7 @@ cron.schedule('* * * * MON,TUE,WED,THU,FRI', async () => {
   Notification.send(
     await getUserFcmTokens(),
     {},
-    "Time is running Out! ⏰",
+    `Time is running Out! ⏰ time: ${new Date().toDateString()}`,
     "Order Closing in 30mins! Hurry Up 🚀"
   );
 });
