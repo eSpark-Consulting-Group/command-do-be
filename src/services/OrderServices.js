@@ -166,7 +166,6 @@ const OrderService = {
   },
 
   async getOrderSummary(data) {
-    console.log("getOrderSummary", data);
     try {
       const order = await prisma.orderItems.groupBy({
         by: ["itemId"],
