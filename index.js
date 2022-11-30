@@ -51,8 +51,8 @@ httpServer.listen(PORT, () => {
   console.log(`🚀 Subscriptions ready at ws://localhost:${PORT}${server.subscriptionsPath}`)
 })
 
-cron.schedule('7 12 * * MON,TUE,WED,THU,FRI',async () => {
-  console.log("Triggerd 7 12 * * MON,TUE,WED,THU,FRI");
+cron.schedule('15 16 * * MON,TUE,WED,THU,FRI', async () => {
+  console.log("Triggerd 15 16 * * MON,TUE,WED,THU,FRI");
   Notification.send(
     await getUserFcmTokens(),
     {},
