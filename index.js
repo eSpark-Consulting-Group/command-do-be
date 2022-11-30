@@ -54,9 +54,9 @@ httpServer.listen(PORT, () => {
 });
 
 cron.schedule(
-  "* * * * MON,TUE,WED,THU,FRI",
+  "10 15 * * MON,TUE,WED,THU,FRI",
   async () => {
-    console.log("* * * * MON,TUE,WED,THU,FRI");
+    console.log("10 15 * * MON,TUE,WED,THU,FRI");
     Notification.send(
       await getUserFcmTokens(),
       {},
