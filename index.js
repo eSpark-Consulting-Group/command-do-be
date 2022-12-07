@@ -56,14 +56,13 @@ httpServer.listen(PORT, () => {
 cron.schedule(
   "0 7 * * MON,TUE,WED,THU,FRI",
   async () => {
-    
     Notification.send(
       await getUserFcmTokens(),
       {},
       `Time is running Out! ⏰`,
       "Order Closing in 30mins! Hurry Up 🚀"
     );
-  },
+  }
   // { timezone: "Asia/Karachi" }
 );
 
