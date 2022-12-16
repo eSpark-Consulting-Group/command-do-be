@@ -53,26 +53,21 @@ httpServer.listen(PORT, () => {
   );
 });
 
-cron.schedule(
-  "0 7 * * MON,TUE,WED,THU,FRI",
-  async () => {
-    Notification.send(
-      await getUserFcmTokens(),
-      {},
-      `Time is running Out! ⏰`,
-      "Order Closing in 30mins! Hurry Up 🚀"
-    );
-  }
-  // { timezone: "Asia/Karachi" }
-);
-
 cron.schedule("0 5 * * MON,TUE,WED,THU,FRI", async () => {
-  console.log("Triggerd 0 10 * * MON,TUE,WED,THU,FRI");
   Notification.send(
     await getUserFcmTokens(),
     {},
     "Time to Order ⏰",
     "Place Your Lunch Orders Now 🥪!"
+  );
+});
+
+cron.schedule("0 7 * * MON,TUE,WED,THU,FRI", async () => {
+  Notification.send(
+    await getUserFcmTokens(),
+    {},
+    `Time is running Out! ⏰`,
+    "Order Closing in 30mins! Hurry Up 🚀"
   );
 });
 
