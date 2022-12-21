@@ -62,7 +62,7 @@ const User = gql`
       fcmToken: String
     ): UserResponse
 
-    forgotPassword(email: String!, role: [ROLES!]!): UserResponse
+    forgotPassword(email: String!): UserResponse
 
     changePassword(
       id: Int!
@@ -76,7 +76,7 @@ const User = gql`
 
     resendOtp(email: String!): UserResponse
 
-    # resetPassword(email: String!, newPassword: String!): UserResponse
+    resetPassword(email: String!, newPassword: String!): UserResponse
     
     logout(id: Int!): UserResponse
 

@@ -3,7 +3,7 @@ require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const { signAccessToken } = require("../utils/jwt.js");
-const { SendMail } = require("./emailServices.js");
+const { SendMail, SendForgotMail } = require("./emailServices.js");
 const {
   createError,
   createResponse,
@@ -66,7 +66,6 @@ const AuthServices = {
     const forgotpassword = await prisma.user.findFirst({
       where: {
         email: data.email,
-        role: data.role,
       },
     });
     if (!forgotpassword)
@@ -86,7 +85,7 @@ const AuthServices = {
         userId: forgotpassword.id,
       },
     });
-    SendMail(data.email, token.toString("hex"));
+    SendForgotMail(data.email, token.toString("hex"));
     return createResponse(data, true, "Otp Send to your Email");
   },
 
@@ -128,7 +127,7 @@ const AuthServices = {
         createdAt: new Date(),
       },
     });
-    SendMail(data?.email, token.toString("hex"));
+    SendForgotMail(data?.email, token.toString("hex"));
     return createResponse(userExist, true, "otp is resend to your email");
   },
 

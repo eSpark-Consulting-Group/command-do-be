@@ -18,7 +18,7 @@ const SendMail = (toUser, user) => {
     },
   });
 
-  let from = `eSpark Lunch Department <lunchdepartment@esparkconsultants.com>`
+  let from = `eSpark Lunch Department <lunchdepartment@esparkconsultants.com>`;
   message = {
     from: from,
     to: toUser,
@@ -46,4 +46,37 @@ const SendMail = (toUser, user) => {
   });
 };
 
-module.exports = { SendMail };
+const SendForgotMail = (toUser, otp) => {
+  const nodemailer = require("nodemailer");
+
+  let transporter = nodemailer.createTransport({
+    host: "smtpout.secureserver.net",
+    secure: true,
+    secureConnection: false, // TLS requires secureConnection to be false
+    tls: {
+      ciphers: "SSLv3",
+    },
+    requireTLS: true,
+    port: 465,
+    debug: true,
+    auth: {
+      user: process.env.MAIL_EMAIL, //"4e4c0b32d63976",
+      pass: process.env.MAIL_PASSWORD, //"5fa31bb53598d2"
+    },
+  });
+  let from = `eSpark Lunch Department <lunchdepartment@esparkconsultants.com>`;
+  message = {
+    from: from,
+    to: toUser,
+    subject: "Account Verification",
+    text: `your registration OTP is ${otp} `,
+  };
+
+  transporter.sendMail(message, function (err, info) {
+    if (err) {
+      console.log("error transporter", err);
+    } else {
+    }
+  });
+};
+module.exports = { SendMail, SendForgotMail };
