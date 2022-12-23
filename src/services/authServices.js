@@ -13,13 +13,17 @@ const {
   sortAlphebetically,
 } = require("../utils/helperFunctions.js");
 const { relations } = require("../utils/relationsHelper");
+const otpGenerator = require("otp-generator");
 
 const AuthServices = {
   async createUser(data) {
-    const isValidate = await validateError(["email", "role", "firstName", "lastName"], data);
+    const isValidate = await validateError(
+      ["email", "role", "firstName", "lastName"],
+      data
+    );
     if (isValidate) return isValidate;
-    data['password'] = genPassword()
-    var userData = {...data}
+    data["password"] = genPassword();
+    var userData = { ...data };
     const user = await prisma.user.findUnique({
       where: { email: data.email },
     });
@@ -33,7 +37,7 @@ const AuthServices = {
       SendMail(userData?.email, {
         email: userData?.email,
         password: userData?.password,
-        name: `${userData?.firstName} ${userData?.lastName}`
+        name: `${userData?.firstName} ${userData?.lastName}`,
       });
       return createResponse(responseData, true, "Registration Successfully");
     } catch (error) {
@@ -48,7 +52,11 @@ const AuthServices = {
     });
 
     if (!userExist) return createError("404", "User Not Found!");
-    if(!userExist.status) return createError("404", "Your account is deactivated please contact the administrator");
+    if (!userExist.status)
+      return createError(
+        "404",
+        "Your account is deactivated please contact the administrator"
+      );
     const checkPassword = bcrypt.compareSync(data.password, userExist.password);
     if (!checkPassword) return createError("401", "Email/Password incorrect");
 
@@ -70,22 +78,27 @@ const AuthServices = {
     });
     if (!forgotpassword)
       return createError("404", "User not registered with this email");
-    const token = await crypto.randomBytes(2);
-    // console.log("forgotpassword.id", forgotpassword.id)
+    const otp = otpGenerator.generate(4, {
+      upperCaseAlphabets: false,
+      specialChars: false,
+      upperCaseAlphabets: false,
+      lowerCaseAlphabets: false,
+    });
+
     const tokenData = await prisma.token.upsert({
       where: {
         userId: forgotpassword.id,
       },
       update: {
-        token: token.toString("hex"),
+        token: otp,
         createdAt: new Date(),
       },
       create: {
-        token: token.toString("hex"),
+        token: otp,
         userId: forgotpassword.id,
       },
     });
-    SendForgotMail(data.email, token.toString("hex"));
+    SendForgotMail(data.email, otp);
     return createResponse(data, true, "Otp Send to your Email");
   },
 
@@ -101,7 +114,10 @@ const AuthServices = {
       },
     });
     if (!verifyOtp || data.token != verifyOtp.token)
-      return createError("401", "Otp is not set or expired");
+      return createError(
+        "401",
+        "Incorrect or expired OTP. Please try again or request a new one"
+      );
     var diff = Math.abs(new Date(verifyOtp.createdAt) - new Date());
     var minutes = Math.floor(diff / 1000 / 60);
     if (minutes >= 2) return createError("401", "Otp is expired");
@@ -117,18 +133,27 @@ const AuthServices = {
       where: { email: data.email },
     });
     if (!userExist) return createError("404", "User Not Found!");
-    const token = await crypto.randomBytes(2);
+    const otp = otpGenerator.generate(4, {
+      upperCaseAlphabets: false,
+      specialChars: false,
+      upperCaseAlphabets: false,
+      lowerCaseAlphabets: false,
+    });
     const response = await prisma.token.update({
       where: {
         userId: userExist.id,
       },
       data: {
-        token: token.toString("hex"),
+        token: otp,
         createdAt: new Date(),
       },
     });
-    SendForgotMail(data?.email, token.toString("hex"));
-    return createResponse(userExist, true, "otp is resend to your email");
+    SendForgotMail(data?.email, otp);
+    return createResponse(
+      userExist,
+      true,
+      "Vefication code sent to your email"
+    );
   },
 
   async changePassword(data) {
@@ -180,7 +205,11 @@ const AuthServices = {
       });
 
       const users = await prisma.user.findMany();
-      return createResponse(sortAlphebetically(users), true, "User deleted successfully1");
+      return createResponse(
+        sortAlphebetically(users),
+        true,
+        "User deleted successfully1"
+      );
     } catch (error) {
       return createError(401, error);
     }

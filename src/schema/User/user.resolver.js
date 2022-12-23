@@ -57,10 +57,10 @@ const UserResolver = {
       const response = await AuthServices.resendOtp(req);
       return response;
     },
-    // resetPassword: async (args, req) => {
-    //   const response = await AuthServices.resetPassword(req);
-    //   return response;
-    // },
+    resetPassword: async (args, req) => {
+      const response = await AuthServices.resetPassword(req);
+      return response;
+    },
     updateProfile: async (args, req) => {
       const response = await AuthServices.updateProfile(req);
       return response;
