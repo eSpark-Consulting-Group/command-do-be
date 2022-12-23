@@ -77,7 +77,7 @@ const AuthServices = {
       },
     });
     if (!forgotpassword)
-      return createError("404", "User not registered with this email");
+      return createError("404", "Vefication code sent to your email");
     const otp = otpGenerator.generate(4, {
       upperCaseAlphabets: false,
       specialChars: false,
