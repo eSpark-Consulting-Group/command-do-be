@@ -53,7 +53,7 @@ httpServer.listen(PORT, () => {
   );
 });
 
-cron.schedule("0 5 * * MON,TUE,WED,THU,FRI", async () => {
+const orderingNotification = cron.schedule("0 5 * * MON,TUE,WED,THU,FRI", async () => {
   Notification.send(
     await getUserFcmTokens(),
     {},
@@ -62,7 +62,7 @@ cron.schedule("0 5 * * MON,TUE,WED,THU,FRI", async () => {
   );
 });
 
-cron.schedule("0 7 * * MON,TUE,WED,THU,FRI", async () => {
+const TimeRunningOutNotification = cron.schedule("30 7 * * MON,TUE,WED,THU,FRI", async () => {
   Notification.send(
     await getUserFcmTokens(),
     {},
@@ -70,6 +70,9 @@ cron.schedule("0 7 * * MON,TUE,WED,THU,FRI", async () => {
     "Order Closing in 30mins! Hurry Up 🚀"
   );
 });
+
+orderingNotification.start();
+TimeRunningOutNotification.start();
 
 //   node-prisma-apollo-backend:
 //   working_dir: /Users/mudassirraza/Desktop/Projects/node-prisma-apollo-backend
