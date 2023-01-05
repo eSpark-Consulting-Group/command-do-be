@@ -18,22 +18,22 @@ const SendMail = (toUser, user) => {
     },
   });
 
-  let from = `eSpark Lunch Department <lunchdepartment@esparkconsultants.com>`;
+  let from = `Commandدو App <lunchdepartment@esparkconsultants.com>`;
   message = {
     from: from,
     to: toUser,
-    subject: "Account For eSpark Lunch App",
+    subject: "Account For Commandدو App",
     html: `<div>
         <p>Respected ${user?.name}<br/>
-        <p>Welcome to eSpark Lunch App <br/>
-            Your account is created for using <b>eSpark Lunch Application</b> for login use below credentials. 
+        <p>Welcome to Commandدو App <br/>
+            Your account is created for using <b>Commandدو Application</b> for login use below credentials. 
             <br/><br/>
             <b> Email: ${user?.email}, <br/> Password: ${user?.password} </b>
         </p>
         <br /> <br /> <br />
         <strong>eSpark Consulting Group © ${new Date().getFullYear()}</strong>
         <br />
-        <strong>Lunch Department</strong>
+        <strong>Commandدو</strong>
         </div>`,
   };
 
@@ -64,7 +64,7 @@ const SendForgotMail = (toUser, otp) => {
       pass: process.env.MAIL_PASSWORD, //"5fa31bb53598d2"
     },
   });
-  let from = `eSpark Lunch Department <lunchdepartment@esparkconsultants.com>`;
+  let from = `Commandدو App <lunchdepartment@esparkconsultants.com>`;
   message = {
     from: from,
     to: toUser,
