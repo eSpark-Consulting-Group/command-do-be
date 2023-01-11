@@ -133,20 +133,38 @@ const AuthServices = {
       where: { email: data.email },
     });
     if (!userExist) return createError("404", "User Not Found!");
+
+    const lastOtp = await prisma.token.findFirst({
+      where: {
+        userId: userExist.id,
+      },
+    });
+
     const otp = otpGenerator.generate(4, {
       upperCaseAlphabets: false,
       specialChars: false,
       upperCaseAlphabets: false,
       lowerCaseAlphabets: false,
     });
+    const dataObj = {
+      token: otp,
+      createdAt: new Date(),
+    };
+    var diff = Math.abs(new Date(lastOtp.createdAt) - new Date());
+    var minutes = Math.floor(diff / 1000 / 60);
+    if (minutes < 60 && lastOtp.counter == 3) {
+      return createError("401", "Too many otp requests retry after 1 hour");
+    } else {
+      minutes < 60
+        ? (dataObj["counter"] = lastOtp.counter + 1)
+        : (dataObj["counter"] = 0);
+    }
+
     const response = await prisma.token.update({
       where: {
         userId: userExist.id,
       },
-      data: {
-        token: otp,
-        createdAt: new Date(),
-      },
+      data: dataObj,
     });
     SendForgotMail(data?.email, otp);
     return createResponse(

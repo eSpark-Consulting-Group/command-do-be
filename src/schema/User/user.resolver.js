@@ -38,7 +38,7 @@ const UserResolver = {
       return response;
     },
     forgotPassword: async (args, req) => {
-      const response = await AuthServices.forgotPassword(req);
+      const response = await AuthServices.resendOtp(req);
       return response;
     },
     changePassword: async (args, req) => {
