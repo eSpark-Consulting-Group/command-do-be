@@ -77,7 +77,7 @@ const AuthServices = {
       },
     });
     if (!forgotpassword)
-      return createError("404", "Vefication code sent to your email");
+      return createError("404", "User not registered with this email");
     const otp = otpGenerator.generate(4, {
       upperCaseAlphabets: false,
       specialChars: false,
@@ -99,7 +99,7 @@ const AuthServices = {
       },
     });
     SendForgotMail(data.email, otp);
-    return createResponse(data, true, "Otp Send to your Email");
+    return createResponse(data, true, "Vefication code sent to your email");
   },
 
   async verifyOtp(data) {
