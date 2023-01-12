@@ -150,7 +150,7 @@ const AuthServices = {
       token: otp,
       createdAt: new Date(),
     };
-    var diff = Math.abs(new Date(lastOtp.createdAt) - new Date());
+    var diff = Math.abs(new Date(lastOtp?.createdAt) - new Date());
     var minutes = Math.floor(diff / 1000 / 60);
     if (minutes < 60 && lastOtp.counter == 3) {
       return createError("401", "Too many otp requests retry after 1 hour");
