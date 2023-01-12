@@ -152,19 +152,23 @@ const AuthServices = {
     };
     var diff = Math.abs(new Date(lastOtp?.createdAt) - new Date());
     var minutes = Math.floor(diff / 1000 / 60);
-    if (minutes < 60 && lastOtp.counter == 3) {
+    if (minutes < 60 && lastOtp?.counter == 3) {
       return createError("401", "Too many otp requests retry after 1 hour");
     } else {
       minutes < 60
-        ? (dataObj["counter"] = lastOtp.counter + 1)
+        ? (dataObj["counter"] = lastOtp?.counter + 1)
         : (dataObj["counter"] = 0);
     }
 
-    const response = await prisma.token.update({
+    const response = await prisma.token.upsert({
       where: {
         userId: userExist.id,
       },
-      data: dataObj,
+      update: dataObj,
+      create: {
+        token: otp,
+        userId: userExist.id,
+      },
     });
     SendForgotMail(data?.email, otp);
     return createResponse(
