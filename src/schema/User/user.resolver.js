@@ -1,6 +1,5 @@
 const { prisma } = require("../../database");
 const AuthServices = require("../../services/authServices");
-const Notification = require("../../services/NotificationServices");
 const { createResponse, sortAlphebetically, getUserFcmTokens } = require("../../utils/helperFunctions");
 
 const UserResolver = {

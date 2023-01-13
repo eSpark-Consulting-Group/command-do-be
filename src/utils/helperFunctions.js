@@ -133,23 +133,23 @@ function genPassword() {
   return password;
 }
 
-function sortAlphebetically (users) {
-    let data = users.reduce((r, e) => {
-        // get first letter of name of current element
-        let alphabet = e?.firstName[0]?.toUpperCase();
-       
-        // if there is no property in accumulator with this letter create it
-        if (!r[alphabet?.toUpperCase()]) r[alphabet?.toUpperCase()] = { alphabet, record: [e] }
-       
-        // if there is push current element to children array for that letter
-        else r[alphabet?.toUpperCase()].record.push(e);
-       
-        // return accumulator
-        return r;
-      }, {});
-       
-      let result = Object.values(data);
-      return result
+function sortAlphebetically(users) {
+  let data = users.reduce((r, e) => {
+    // get first letter of name of current element
+    let alphabet = e?.firstName[0]?.toUpperCase();
+
+    // if there is no property in accumulator with this letter create it
+    if (!r[alphabet?.toUpperCase()])
+      r[alphabet?.toUpperCase()] = { alphabet, record: [e] };
+    // if there is push current element to children array for that letter
+    else r[alphabet?.toUpperCase()].record.push(e);
+
+    // return accumulator
+    return r;
+  }, {});
+
+  let result = Object.values(data);
+  return result;
 }
 
 async function getUserFcmTokens() {
@@ -162,9 +162,49 @@ async function getUserFcmTokens() {
     },
   });
   const tokens = users.map((val) => val?.fcmToken);
-  return tokens
+  return tokens;
 }
 
+async function getTodaysOrderUsers() {
+  const today = new Date().toISOString().slice(0, 10);
+  const users = await prisma.user.findMany({
+    where: {
+      Orders: {
+        some: {
+          createdAt: {
+            gte: today?.concat("T00:00:00.925Z"),
+          },
+          paidAmount: {
+            gt: 0,
+          },
+        },
+      },
+      fcmToken: { not: "" },
+    },
+    select: {
+      fcmToken: true,
+    },
+  });
+  console.log("users users", users);
+  const tokens = users.map((val) => val?.fcmToken);
+  return tokens;
+}
+
+async function getFcmTokensByRole(role = "ADMIN") {
+  const users = await prisma.user.findMany({
+    where: {
+      role: {
+        has: role,
+      },
+      fcmToken: { not: "" },
+    },
+    select: {
+      fcmToken: true,
+    },
+  });
+  const tokens = users.map((val) => val?.fcmToken);
+  return tokens;
+}
 module.exports = {
   createResponse,
   createError,
@@ -180,5 +220,7 @@ module.exports = {
   getNextDay,
   genPassword,
   sortAlphebetically,
-  getUserFcmTokens
+  getUserFcmTokens,
+  getFcmTokensByRole,
+  getTodaysOrderUsers,
 };

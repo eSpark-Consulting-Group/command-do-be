@@ -1,9 +1,5 @@
 const { prisma } = require("../database.js");
 require("dotenv").config();
-const bcrypt = require("bcryptjs");
-const crypto = require("crypto");
-const { signAccessToken } = require("../utils/jwt.js");
-const SendMail = require("./emailServices.js");
 const { createError, createResponse } = require("../utils/helperFunctions.js");
 
 const CategoryServices = {

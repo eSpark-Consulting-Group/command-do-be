@@ -5,7 +5,7 @@ const {
   createResponse,
   getNextDay,
   getPreviousDay,
-  getUserFcmTokens,
+  getTodaysOrderUsers,
 } = require("../utils/helperFunctions");
 const Notification = require("./NotificationServices");
 
@@ -273,12 +273,15 @@ const OrderService = {
   },
 
   async orderPurchased(data) {
-    Notification.send(
-      await getUserFcmTokens(),
-      {},
-      "Lunch Arrived",
-      "Your Order is Arrived Come in a cafeteria for a party 🥳️"
-    );
+    const usersToken = await getTodaysOrderUsers()
+    if(usersToken?.length > 0) {
+      Notification.send(
+        usersToken,
+        {},
+        "Lunch Arrived",
+        "Your Order is Arrived Come in a cafeteria for a party 🥳️"
+      );
+    }
     return createResponse(null, true, "Alert Send Successfully to all members");
   },
 

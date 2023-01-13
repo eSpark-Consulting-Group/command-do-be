@@ -10,8 +10,8 @@ const application = createApplication({
       UserModule,
       CategoryModule,
       ItemModule,
-      OrderModule
-      // NotificationModule,
+      OrderModule,
+      NotificationModule,
   ],
 });
 
