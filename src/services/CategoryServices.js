@@ -55,7 +55,7 @@ const CategoryServices = {
         return createResponse(responseData, true, "New Category Added");
       }
 
-      return createError(200, "An Error Occur", false, null, ["Occur"]);
+      return createError(200, "An Error Occur", false, null, 'Something went wrong');
     } catch (error) {
       return createError(401, error);
     }
@@ -74,7 +74,7 @@ const CategoryServices = {
           });
           return createResponse(responseData, true, "Category Update Successfully");
         }
-        return createError(200, "An Error Occur", false, null, ["Occur"]);
+        return createError(200, "An Error Occur", false, null, 'Something went wrong');
       } catch (error) {
         return createError(401, error);
       }
@@ -92,7 +92,7 @@ const CategoryServices = {
         });
         return createResponse(responseData, true, "Category deleted");
       }
-      return createError(200, "An Error Occur", false, null, ["Occur"]);
+      return createError(200, "An Error Occur", false, null, 'Something went wrong');
     } catch (error) {
       return createError(401, error);
     }

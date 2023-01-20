@@ -11,7 +11,7 @@ const express = require("express");
 const { env } = require("process");
 const cron = require("node-cron");
 const Notification = require("./src/services/NotificationServices");
-const { getUserFcmTokens } = require("./src/utils/helperFunctions");
+const { getUserFcmTokens, getUserIds } = require("./src/utils/helperFunctions");
 
 const app = express();
 const httpServer = createServer(app);
@@ -58,7 +58,9 @@ const orderingNotification = cron.schedule("0 5 * * MON,TUE,WED,THU,FRI", async 
     await getUserFcmTokens(),
     {},
     "Time to Order ⏰",
-    "Place Your Lunch Orders Now 🥪!"
+    "Place Your Lunch Orders Now 🥪!",
+    "NOTICE",
+    await getUserIds()
   );
 });
 
@@ -67,7 +69,9 @@ const TimeRunningOutNotification = cron.schedule("30 7 * * MON,TUE,WED,THU,FRI",
     await getUserFcmTokens(),
     {},
     `Time is running Out! ⏰`,
-    "Order Closing in 30mins! Hurry Up 🚀"
+    "Order Closing in 30mins! Hurry Up 🚀",
+    "NOTICE",
+    await getUserIds()
   );
 });
 

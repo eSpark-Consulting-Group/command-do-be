@@ -100,7 +100,9 @@ const OrderService = {
           [user.fcmToken],
           {},
           "Amount Returned",
-          "Your today's remaining amount is Returned"
+          "Your today's remaining amount is Returned",
+          "NOTICE",
+          [user.id]
         );
       } else {
         for (let index = 0; index < inputs?.length; index++) {
@@ -274,12 +276,14 @@ const OrderService = {
 
   async orderPurchased(data) {
     const usersToken = await getTodaysOrderUsers()
-    if(usersToken?.length > 0) {
+    if(usersToken?.tokens?.length > 0) {
       Notification.send(
-        usersToken,
+        usersToken?.tokens,
         {},
         "Lunch Arrived",
-        "Your Order is Arrived Come in a cafeteria for a party 🥳️"
+        "Your Order is Arrived Come in a cafeteria for a party 🥳️",
+        "NOTICE",
+        usersToken?.ids
       );
     }
     return createResponse(null, true, "Alert Send Successfully to all members");

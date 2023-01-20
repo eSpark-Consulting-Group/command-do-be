@@ -8,28 +8,34 @@ const {
 } = require("../utils/helperFunctions.js");
 
 const Notification = {
-  async send(usertokens, data, title, description) {
-    console.log("usertokens, data, title, description", usertokens, data, title, description)
+  async send(usertokens, data, title, description, type, userIds) {
+    // console.log("usertokens, data, title, description", usertokens, data, title, description)
     const message = {
       notification: { title: title, body: description },
-      data: data,
+      data: { data: JSON.stringify(data) },
       tokens: usertokens,
     };
     try {
+      this.addNewNotification(data, title, description, type, userIds);
       const result = await admin.messaging().sendMulticast(message);
-      console.log("result SendNotificationToMutliUsers", result);
+      console.log("result SendNotificationToMutliUsers", message);
     } catch (error) {
-      console.log("error  SendNotificationToMutliUsers", error);
+      console.log("error  SendNotificationToMutliUsers", error, message);
     }
   },
 
-  async getAllNotifications() {
+  async getAllNotifications(data) {
     try {
       const responseData = await prisma.notification.findMany({
+        where: data?.where ? {
+          receivers: {
+            has: data?.where?.userId
+          }
+        } : {},
         include: {
           receiver: true,
           sender: true,
-        }
+        },
       });
       return createResponse(responseData, true, "All Notifications");
     } catch (error) {
@@ -44,7 +50,7 @@ const Notification = {
         include: {
           receiver: true,
           sender: true,
-        }
+        },
       });
       if (!responseData) return createError(404, "Notification not found");
       return createResponse(responseData, true, "Notifications By Id");
@@ -53,68 +59,66 @@ const Notification = {
     }
   },
 
-  async addNotificationMedia(id, data) {
-    for (const media of data) {
-      const MediaData = {
-        notificationId: id,
-        url: media.url,
-        type: media.type,
-      };
-      const addMediaData = await prisma.media.create({
-        data: MediaData,
-      });
-    }
-  },
-
-  async addNewNotification(data) {
+  async addNewNotification(data, title, message, type, userIds) {
     const userExist = await prisma.user.findUnique({
-      where: {id: data.senderId},
-    })
-    if(!userExist) return createError("404", "User Not Found!");
-    const media = [...data?.media]
-    delete data?.media
+      where: { id: data.senderId },
+    });
+    if (!userExist) return createError("404", "User Not Found!");
     try {
       const notification = await prisma.notification.create({
-        data: data,
+        data: {
+          title: title ?? "",
+          message: message ?? "",
+          senderId: data?.senderId,
+          receiverId: data?.receiverId,
+          data: data,
+          type: type ?? "FEEDBACK",
+          receivers: userIds ?? [],
+        },
       });
 
       if (notification.id) {
-        const responseMedia = await this.addNotificationMedia(notification.id, media)
-        const responseData = await prisma.notification.findUnique({
-          where: { id: notification.id },
-        });
-        Notification.send(
-          await getFcmTokensByRole("ADMIN"),
-          {},
-          data?.title,
-          data?.message
-        );
-        return createResponse(responseData, true, "New Notification Added");
+        return createResponse(notification, true, "New Notification Added");
       }
-
-      return createError(200, "An Error Occur", false, null, ["Occur"]);
+      return createError(
+        200,
+        "An Error Occur",
+        false,
+        null,
+        "Something went wrong"
+      );
     } catch (error) {
       return createError(401, error);
     }
   },
 
-  async updateNotification (data) {
+  async updateNotification(data) {
     try {
-        const notification = await prisma.notification.findUnique({
-          where: { id: data?.id },
+      const notification = await prisma.notification.findUnique({
+        where: { id: data?.id },
+      });
+      if (!notification) return createError("404", "Notification Not Found!");
+      if (notification.id) {
+        const responseData = await prisma.notification.update({
+          where: { id: notification.id },
+          data,
         });
-        if (!notification) return createError("404", "Notification Not Found!");
-        if (notification.id) {
-          const responseData = await prisma.notification.update({
-            where: { id: notification.id },
-            data
-          });
-          return createResponse(responseData, true, "Notification Update Successfully");
-        }
-        return createError(200, "An Error Occur", false, null, ["Occur"]);
-      } catch (error) {
-        return createError(401, error);
+        return createResponse(
+          responseData,
+          true,
+          "Notification Update Successfully"
+        );
       }
+      return createError(
+        200,
+        "An Error Occur",
+        false,
+        null,
+        "Something went wrong"
+      );
+    } catch (error) {
+      return createError(401, error);
+    }
   },
 
   async deleteNotification(data) {
@@ -129,12 +133,17 @@ const Notification = {
         });
         return createResponse(responseData, true, "Notification deleted");
       }
-      return createError(200, "An Error Occur", false, null, ["Occur"]);
+      return createError(
+        200,
+        "An Error Occur",
+        false,
+        null,
+        "Something went wrong"
+      );
     } catch (error) {
       return createError(401, error);
     }
   },
 };
-
 
 module.exports = Notification;

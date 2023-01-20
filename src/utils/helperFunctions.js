@@ -152,19 +152,6 @@ function sortAlphebetically(users) {
   return result;
 }
 
-async function getUserFcmTokens() {
-  const users = await prisma.user.findMany({
-    where: {
-      fcmToken: { not: "" },
-    },
-    select: {
-      fcmToken: true,
-    },
-  });
-  const tokens = users.map((val) => val?.fcmToken);
-  return tokens;
-}
-
 async function getTodaysOrderUsers() {
   const today = new Date().toISOString().slice(0, 10);
   const users = await prisma.user.findMany({
@@ -183,9 +170,23 @@ async function getTodaysOrderUsers() {
     },
     select: {
       fcmToken: true,
+      id: true
     },
   });
-  console.log("users users", users);
+  const tokens = users.map((val) => val?.fcmToken);
+  const ids = users.map((val) => val?.id);
+  return {tokens, ids};
+}
+
+async function getUserFcmTokens() {
+  const users = await prisma.user.findMany({
+    where: {
+      fcmToken: { not: "" },
+    },
+    select: {
+      fcmToken: true,
+    },
+  });
   const tokens = users.map((val) => val?.fcmToken);
   return tokens;
 }
@@ -205,6 +206,36 @@ async function getFcmTokensByRole(role = "ADMIN") {
   const tokens = users.map((val) => val?.fcmToken);
   return tokens;
 }
+
+async function getUserIds() {
+  const users = await prisma.user.findMany({
+    where: {
+      fcmToken: { not: "" },
+    },
+    select: {
+      id: true,
+    },
+  });
+  const ids = users.map((val) => val?.id);
+  return ids;
+}
+
+async function getIdsByRole(role = "ADMIN") {
+  const users = await prisma.user.findMany({
+    where: {
+      role: {
+        has: role,
+      },
+      fcmToken: { not: "" },
+    },
+    select: {
+      id: true,
+    },
+  });
+  const ids = users.map((val) => val?.id);
+  return ids;
+}
+
 module.exports = {
   createResponse,
   createError,
@@ -223,4 +254,6 @@ module.exports = {
   getUserFcmTokens,
   getFcmTokensByRole,
   getTodaysOrderUsers,
+  getIdsByRole,
+  getUserIds
 };

@@ -4,6 +4,8 @@ const {NotificationModule} = require("./Notification/notification.module");
 const { CategoryModule } = require('./Category/category.module');
 const { ItemModule } = require('./Item/item.module');
 const { OrderModule } = require('./Order/order.module');
+const { FeedbackModule } = require('./Feedback/feedback.module');
+const { CommentModule } = require('./Comment/comment.module');
 
 const application = createApplication({
   modules: [
@@ -12,6 +14,8 @@ const application = createApplication({
       ItemModule,
       OrderModule,
       NotificationModule,
+      FeedbackModule,
+      CommentModule
   ],
 });
 
