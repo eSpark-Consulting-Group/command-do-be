@@ -92,9 +92,11 @@ const Feedback = {
     });
     if (!feedbackTypeExist)
       return createError("404", "This Feedback Type is Not Found!");
-
-    const media = [...data?.media];
-    delete data?.media;
+   var media;
+   if(data?.media) {
+      media = [...data?.media];
+      delete data?.media;
+   }
     try {
       const feedback = await prisma.feedback.create({
         data: data,
@@ -102,9 +104,10 @@ const Feedback = {
           User: true,
         },
       });
-
       if (feedback.id) {
-        const responseMedia = await this.addFeedbackMedia(feedback.id, media);
+         if(media?.length > 0) {
+            const responseMedia = await this.addFeedbackMedia(feedback.id, media);
+          }
         const responseData = await prisma.feedback.findUnique({
           where: { id: feedback.id },
         });
