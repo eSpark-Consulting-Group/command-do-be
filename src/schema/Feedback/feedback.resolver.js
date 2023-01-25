@@ -5,7 +5,7 @@ const FeedbackResolver = {
   Query: {
     getAllFeedbacks: async (args, req, context) => {
       try {
-        const responseData = await FeedbackServices.getAllFeedbacks();
+        const responseData = await FeedbackServices.getAllFeedbacks(req);
         return responseData;
       } catch (error) {
         return createError(401, error);

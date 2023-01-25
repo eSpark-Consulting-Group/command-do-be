@@ -8,12 +8,21 @@ const {
 const NotificationServices = require("./NotificationServices");
 
 const Comment = {
-  async getAllComments() {
+  async getAllComments(data) {
     try {
       const responseData = await prisma.comment.findMany({
+        where: {
+          parentId: null,
+          feedbackId: data?.where?.feedbackId ?? undefined,
+        },
         include: {
           User: true,
-          replies: true,
+          replies: {
+            include: {
+              parentComment: true,
+              User: true
+            }
+          },
         },
       });
       return createResponse(responseData, true, "All Comments");

@@ -5,7 +5,7 @@ const CommentResolver = {
   Query: {
     getAllComments: async (args, req, context) => {
       try {
-        const responseData = await CommentServices.getAllComments();
+        const responseData = await CommentServices.getAllComments(req);
         return responseData;
       } catch (error) {
         return createError(401, error);

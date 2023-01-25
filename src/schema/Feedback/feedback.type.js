@@ -68,9 +68,13 @@ const Feedback = gql`
     url: String!
     type: MEDIA_TYPES!
   }
-
+  
+  input getFeedbackInput {
+    feedbackTypeId: Int,
+    userId: Int,
+  }
   type Query {
-    getAllFeedbacks: FeedbackArrayResponse
+    getAllFeedbacks(where: getFeedbackInput): FeedbackArrayResponse
     getFeedbackById(id: Int!): FeedbackResponse
     getAllFeedbackTypes: FeedbackTypeArrayResponse
     getFeedbackTypeById(id: Int!): FeedbackTypeResponse

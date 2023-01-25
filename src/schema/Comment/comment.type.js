@@ -2,20 +2,20 @@ const { gql } = require("graphql-modules");
 
 const Comment = gql`
   scalar Date
-  
+
   type Comment {
-    id:            Int       
-    comment:       String    
-    userId:        Int
-    User:          User      
-    parentId:      Int
-    parentComment: Comment  
-    replies:       [Comment] 
-    feedbackId:    Int
-    Feedback:      Feedback  
-    createdAt:     Date 
-    updatedAt:     Date  
-}
+    id: Int
+    comment: String
+    userId: Int
+    User: User
+    parentId: Int
+    parentComment: Comment
+    replies: [Comment]
+    feedbackId: Int
+    Feedback: Feedback
+    createdAt: Date
+    updatedAt: Date
+  }
 
   type CommentResponse {
     status: Boolean
@@ -31,9 +31,12 @@ const Comment = gql`
     error: String
   }
 
+  input GetCommentInput {
+    feedbackId: Int
+  }
 
   type Query {
-    getAllComments: CommentArrayResponse
+    getAllComments(where: GetCommentInput): CommentArrayResponse
     getCommentById(id: Int!): CommentResponse
   }
 

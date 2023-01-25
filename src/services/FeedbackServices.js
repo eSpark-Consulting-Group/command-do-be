@@ -9,14 +9,20 @@ const {
 const NotificationServices = require("./NotificationServices");
 
 const Feedback = {
-  async getAllFeedbacks() {
+  async getAllFeedbacks(data) {
     try {
       const responseData = await prisma.feedback.findMany({
+        where: {
+          feedbackTypeId: data?.where?.feedbackTypeId ?? undefined,
+          userId: data?.where?.userId ?? undefined,
+        },
         include: {
           Media: true,
           feedbackType: true,
           User: true,
+          Comment: true,
         },
+
       });
       return createResponse(responseData, true, "All Feedbacks");
     } catch (error) {
