@@ -1,22 +1,22 @@
+const transportConfig = {
+  host: "66-29-141-249.cprapid.com",
+  secure: true,
+  tls: {
+    rejectUnauthorized: false,
+  },
+  requireTLS: true,
+  port: 465,
+  debug: true,
+  auth: {
+    user: process.env.MAIL_EMAIL, //"4e4c0b32d63976",
+    pass: process.env.MAIL_PASSWORD, //"5fa31bb53598d2"
+  },
+};
 const SendMail = (toUser, user) => {
   console.log("send mail running");
   const nodemailer = require("nodemailer");
 
-  var transporter = nodemailer.createTransport({
-    host: "smtpout.secureserver.net",
-    secure: true,
-    secureConnection: false, // TLS requires secureConnection to be false
-    tls: {
-      ciphers: "SSLv3",
-    },
-    requireTLS: true,
-    port: 465,
-    debug: true,
-    auth: {
-      user: process.env.MAIL_EMAIL, //"4e4c0b32d63976",
-      pass: process.env.MAIL_PASSWORD, //"5fa31bb53598d2"
-    },
-  });
+  var transporter = nodemailer.createTransport(transportConfig);
 
   let from = `Commandدو App <lunchdepartment@esparkconsultants.com>`;
   message = {
@@ -49,21 +49,7 @@ const SendMail = (toUser, user) => {
 const SendForgotMail = (toUser, otp) => {
   const nodemailer = require("nodemailer");
 
-  let transporter = nodemailer.createTransport({
-    host: "smtpout.secureserver.net",
-    secure: true,
-    secureConnection: false, // TLS requires secureConnection to be false
-    tls: {
-      ciphers: "SSLv3",
-    },
-    requireTLS: true,
-    port: 465,
-    debug: true,
-    auth: {
-      user: process.env.MAIL_EMAIL, //"4e4c0b32d63976",
-      pass: process.env.MAIL_PASSWORD, //"5fa31bb53598d2"
-    },
-  });
+  let transporter = nodemailer.createTransport(transportConfig);
   let from = `Commandدو App <lunchdepartment@esparkconsultants.com>`;
   message = {
     from: from,
@@ -74,8 +60,9 @@ const SendForgotMail = (toUser, otp) => {
 
   transporter.sendMail(message, function (err, info) {
     if (err) {
-      console.log("error transporter", err);
+      console.log("error transporte SendForgotMail", err);
     } else {
+      console.log("transporter info SendForgotMail", info);
     }
   });
 };
