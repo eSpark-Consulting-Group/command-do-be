@@ -1,9 +1,5 @@
 const { prisma } = require("../database.js");
 require("dotenv").config();
-const bcrypt = require("bcryptjs");
-const crypto = require("crypto");
-const { signAccessToken } = require("../utils/jwt.js");
-const SendMail = require("./emailServices.js");
 const { createError, createResponse } = require("../utils/helperFunctions.js");
 
 const CategoryServices = {
@@ -59,7 +55,7 @@ const CategoryServices = {
         return createResponse(responseData, true, "New Category Added");
       }
 
-      return createError(200, "An Error Occur", false, null, ["Occur"]);
+      return createError(200, "An Error Occur", false, null, 'Something went wrong');
     } catch (error) {
       return createError(401, error);
     }
@@ -78,7 +74,7 @@ const CategoryServices = {
           });
           return createResponse(responseData, true, "Category Update Successfully");
         }
-        return createError(200, "An Error Occur", false, null, ["Occur"]);
+        return createError(200, "An Error Occur", false, null, 'Something went wrong');
       } catch (error) {
         return createError(401, error);
       }
@@ -96,7 +92,7 @@ const CategoryServices = {
         });
         return createResponse(responseData, true, "Category deleted");
       }
-      return createError(200, "An Error Occur", false, null, ["Occur"]);
+      return createError(200, "An Error Occur", false, null, 'Something went wrong');
     } catch (error) {
       return createError(401, error);
     }

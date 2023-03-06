@@ -10,28 +10,32 @@ generator client {
 }
 
 model User {
-  id              Int               @id @default(autoincrement())
-  email           String?           @unique
-  firstName       String?
-  lastName        String?
-  userName        String?
-  avatar          String?
-  dob             DateTime?
-  phoneNumber     String?
-  country         String?
-  city            String?
-  role            ROLES[]
-  password        String            @default("")
-  resetToken      String            @default("")
-  status          Boolean           @default(true)
-  isVerified      Boolean           @default(true)
-  fcmToken        String?
-  createdAt       DateTime          @default(now()) @db.Date
-  updatedAt       DateTime          @updatedAt @db.Date
-  FavoriteItems   FavoriteItems[]
-  Orders          Order[]           @relation("UserOrder")
-  RiderOrder      Order[]           @relation("RiderOrder")
-  CollectedOrders CollectedOrders[]
+  id                   Int               @id @default(autoincrement())
+  email                String?           @unique
+  firstName            String?
+  lastName             String?
+  userName             String?
+  avatar               String?
+  dob                  DateTime?
+  phoneNumber          String?
+  country              String?
+  city                 String?
+  role                 ROLES[]
+  password             String            @default("")
+  resetToken           String            @default("")
+  status               Boolean           @default(true)
+  isVerified           Boolean           @default(true)
+  fcmToken             String?
+  createdAt            DateTime          @default(now()) @db.Date
+  updatedAt            DateTime          @updatedAt @db.Date
+  FavoriteItems        FavoriteItems[]
+  Orders               Order[]           @relation("UserOrder")
+  RiderOrder           Order[]           @relation("RiderOrder")
+  CollectedOrders      CollectedOrders[]
+  SenderNotification   Notification[]    @relation("senderNotification")
+  ReceiverNotification Notification[]    @relation("receiverNotification")
+  Comment              Comment[]
+  Feedback             Feedback[]
 }
 
 model Token {
@@ -39,6 +43,7 @@ model Token {
   userId    Int?     @unique
   token     String   @default("")
   createdAt DateTime @default(now())
+  counter   Int?     @default(0)
 }
 
 model Category {
@@ -112,6 +117,66 @@ model CollectedOrders {
   updatedAt   DateTime @updatedAt @db.Date
 }
 
+model Media {
+  id         Int         @id @default(autoincrement())
+  url        String      @default("")
+  type       MEDIA_TYPES @default(IMAGE)
+  feedbackId Int?
+  Feedback   Feedback?   @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model Feedback {
+  id             Int            @id @default(autoincrement())
+  title          String         @default("")
+  message        String         @default("")
+  feedbackTypeId Int?
+  feedbackType   FeedbackType?  @relation(fields: [feedbackTypeId], references: [id], onDelete: Cascade)
+  Media          Media[]
+  Comment        Comment[]
+  userId         Int?
+  User           User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  FeedBackStatus FeedBackStatus @default(OPEN)
+}
+
+model FeedbackType {
+  id        Int        @id @default(autoincrement())
+  name      String     @default("")
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Feedback  Feedback[]
+}
+
+model Comment {
+  id            Int       @id @default(autoincrement())
+  comment       String    @default("")
+  userId        Int
+  User          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parentId      Int?
+  parentComment Comment?  @relation("parentComment", fields: [parentId], references: [id], onDelete: Cascade)
+  replies       Comment[] @relation("parentComment")
+  feedbackId    Int
+  Feedback      Feedback  @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Notification {
+  id         Int                @id @default(autoincrement())
+  title      String             @default("")
+  message    String             @default("")
+  data       Json?              @default("{}")
+  type       NOTIFICATION_TYPES @default(FEEDBACK)
+  senderId   Int?
+  sender     User?              @relation("senderNotification", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId Int?
+  receiver   User?              @relation("receiverNotification", fields: [receiverId], references: [id], onDelete: Cascade)
+  receivers  Int[]
+}
+
 enum ROLES {
   USER
   RIDER
@@ -121,4 +186,23 @@ enum ROLES {
 enum ORDER_STATUS {
   PAID
   UNPAID
+}
+
+enum MEDIA_TYPES {
+  IMAGE
+  VIDEO
+  ATTACHMENT
+}
+
+enum NOTIFICATION_TYPES {
+  FEEDBACK
+  MESSAGE
+  COMMENT
+  NOTICE
+}
+
+enum FeedBackStatus {
+  OPEN
+  IN_PROGRESS
+  CLOSED
 }

@@ -1,6 +1,5 @@
 const { prisma } = require("../../database");
 const AuthServices = require("../../services/authServices");
-const Notification = require("../../services/NotificationServices");
 const { createResponse, sortAlphebetically, getUserFcmTokens } = require("../../utils/helperFunctions");
 
 const UserResolver = {
@@ -38,7 +37,7 @@ const UserResolver = {
       return response;
     },
     forgotPassword: async (args, req) => {
-      const response = await AuthServices.forgotPassword(req);
+      const response = await AuthServices.resendOtp(req);
       return response;
     },
     changePassword: async (args, req) => {

@@ -56,7 +56,7 @@ const ItemServices = {
         return createResponse(responseData, true, "New Item Added");
       }
 
-      return createError(200, "An Error Occur", false, null, ["Occur"]);
+      return createError(200, "An Error Occur", false, null, 'Something went wrong');
     } catch (error) {
       return createError(401, error);
     }
@@ -75,7 +75,7 @@ const ItemServices = {
           });
           return createResponse(responseData, true, "Item Update Successfully");
         }
-        return createError(200, "An Error Occur", false, null, ["Occur"]);
+        return createError(200, "An Error Occur", false, null, 'Something went wrong');
       } catch (error) {
         return createError(401, error);
       }
@@ -93,7 +93,7 @@ const ItemServices = {
         });
         return createResponse(responseData, true, "Item deleted");
       }
-      return createError(200, "An Error Occur", false, null, ["Occur"]);
+      return createError(200, "An Error Occur", false, null, 'Something went wrong');
     } catch (error) {
       return createError(401, error);
     }
