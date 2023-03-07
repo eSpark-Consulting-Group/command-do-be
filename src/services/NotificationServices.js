@@ -27,11 +27,13 @@ const Notification = {
   async getAllNotifications(data) {
     try {
       const responseData = await prisma.notification.findMany({
-        where: data?.where ? {
-          receivers: {
-            has: data?.where?.userId
-          }
-        } : {},
+        where: data?.where
+          ? {
+              receivers: {
+                has: data?.where?.userId,
+              },
+            }
+          : {},
         include: {
           receiver: true,
           sender: true,
@@ -60,10 +62,12 @@ const Notification = {
   },
 
   async addNewNotification(data, title, message, type, userIds) {
-    const userExist = await prisma.user.findUnique({
-      where: { id: data.senderId },
-    });
-    if (!userExist) return createError("404", "User Not Found!");
+    if (data.senderId) {
+      const userExist = await prisma.user.findUnique({
+        where: { id: data.senderId },
+      });
+      if (!userExist) return createError("404", "User Not Found!");
+    }
     try {
       const notification = await prisma.notification.create({
         data: {
