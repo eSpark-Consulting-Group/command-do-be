@@ -1,5 +1,5 @@
 const transportConfig = {
-  host: "66-29-141-249.cprapid.com",
+  host: "business89.web-hosting.com",
   secure: true,
   tls: {
     rejectUnauthorized: false,
