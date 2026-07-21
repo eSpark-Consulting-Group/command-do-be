@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@graphql-tools/schema": "^8.3.8",
-    "@prisma/client": "^3.1.1",
+    "@prisma/client": "^7.9.0",
     "apollo-server": "^2.24.0",
     "apollo-server-core": "^3.6.7",
     "apollo-server-express": "^2.24.0",
