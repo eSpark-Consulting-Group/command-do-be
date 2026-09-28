@@ -22,7 +22,7 @@
     "apollo-server-express": "^2.24.0",
     "bcryptjs": "^2.4.3",
     "dotenv": "^10.0  .0",
-    "firebase-admin": "^10.1.0",
+    "firebase-admin": "^14.5.0",
     "graphql": "^15.6.0",
     "graphql-modules": "^2.0.0",
     "graphql-subscriptions": "^2.0.0",
